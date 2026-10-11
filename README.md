@@ -1,106 +1,110 @@
-# Boletines diarios de sargazo de SEMAR, 2023–2026, en tabla
+# SEMAR daily sargassum bulletins, 2023–2026, as a table
 
-Este repositorio convierte en datos tabulares los **1,053 boletines diarios** que el Instituto Oceanográfico del Golfo y Mar Caribe de la Secretaría de Marina (IOGMC-SEMAR) publica en PDF sobre el sargazo en el Caribe mexicano, del 12 de enero de 2023 al 9 de octubre de 2026.
+**English** · [Español](README.es.md)
 
-Hasta ahora esa información solo existía como un PDF por día, con cinco formatos distintos a lo largo del tiempo. Aquí queda en dos tablas listas para análisis, con el código para reproducirlas y una revisión de lo que los datos permiten y no permiten concluir.
+This repository turns the **1,053 daily bulletins** on sargassum in the Mexican Caribbean, published as PDFs by the Oceanographic Institute of the Gulf and Caribbean Sea of Mexico's Navy (IOGMC-SEMAR), into tabular data. Coverage runs from January 12, 2023 to October 9, 2026.
 
-**Autor:** Maximiliano Macías Herrera, Ingeniería Industrial, UNAM.
-**Fuente original:** [Boletines diarios de sargazo, SEMAR](https://diredimoat.semar.gob.mx/OpSargazo/SargazoBoletinDiario.html).
+Until now this information existed only as one PDF per day, in five different formats over time. Here it is available as two analysis-ready tables, with the code to reproduce them and a review of what the data can and cannot support.
 
----
+**Author:** Maximiliano Macías Herrera, Industrial Engineering, UNAM (Mexico).
+**Original source:** [SEMAR daily sargassum bulletins](https://diredimoat.semar.gob.mx/OpSargazo/SargazoBoletinDiario.html) (in Spanish).
 
-## Qué contiene
-
-| Archivo | Descripción |
-|---|---|
-| [`datos/boletines_diarios.csv`](datos/boletines_diarios.csv) | Una fila por boletín: toneladas estimadas, semáforo, regiones río arriba, nubosidad, conglomerados |
-| [`datos/niveles_por_zona.csv`](datos/niveles_por_zona.csv) | Nivel de arribo por zona (Sur, Centro, Norte) y día, abr-2023 a oct-2024 |
-| [`datos/diccionario.md`](datos/diccionario.md) | Definición de cada columna y de la escala de alertamiento |
-| `sargazo_semar.py` | Descarga los PDF, corrige enlaces rotos y extrae los campos |
-| `preparar_datos.py` | Limpia la extracción y genera las tablas publicadas |
-| `figuras.py` | Genera las figuras y la prueba de anticipación de este README |
-
-### Cobertura
-
-| Campo | Boletines con el dato |
-|---|---|
-| Toneladas en el Caribe mexicano | 913 |
-| Semáforo regional (escala de 8 niveles) | 943 |
-| Toneladas por región río arriba (Caribe central, oriental y Atlántico) | 441 (abr-2025 en adelante) |
-| Nivel por zona Sur / Centro / Norte | 376 días completos (abr-2023 a oct-2024) |
-| Pronóstico de toneladas que ingresan a costa | 154 (abr–sep 2023) |
-| Nota de cifra arrastrada por nubosidad | 47 |
-
-![Cobertura por campo y mes](figuras/2_cobertura.png)
-
-El archivo en línea cubre enero–octubre de 2023, marzo–octubre de 2024, marzo–diciembre de 2025 y enero–octubre de 2026. La numeración de los boletines (el del 12-ene-2023 es el núm. 491) indica que existen boletines anteriores que no están publicados.
+> Figures, column names and the data dictionary are in Spanish, matching the source bulletins. Key terms are translated below.
 
 ---
 
-## Hallazgos
+## Contents
 
-### 1. El tamaño de la temporada cambia mucho de un año a otro
+| File | Description |
+|---|---|
+| [`datos/boletines_diarios.csv`](datos/boletines_diarios.csv) | One row per bulletin: estimated tonnage, alert level, upstream regions, cloud cover, sargassum patches |
+| [`datos/niveles_por_zona.csv`](datos/niveles_por_zona.csv) | Beaching level by coastal zone (South, Center, North) and day, Apr 2023 – Oct 2024 |
+| [`datos/diccionario.md`](datos/diccionario.md) | Column definitions and the alert scale (Spanish) |
+| `sargazo_semar.py` | Downloads the PDFs, repairs broken links and extracts the fields |
+| `preparar_datos.py` | Cleans the extraction and writes the published tables |
+| `figuras.py` | Generates the figures and the lead-time test shown below |
 
-El máximo diario estimado fue de 28,441 t en 2023, 13,208 t en 2024, 82,699 t en 2025 y 90,538 t en 2026.
+### Coverage
 
-![Temporadas 2023–2026](figuras/1_temporadas.png)
+| Field | Bulletins with data |
+|---|---|
+| Tonnage in the Mexican Caribbean (`toneladas_caribe_mexicano`) | 913 |
+| Regional alert level, 8-step scale (`semaforo`) | 943 |
+| Tonnage in upstream regions: Central Caribbean, Eastern Caribbean, West-Central Atlantic | 441 (from Apr 2025) |
+| Beaching level by zone, South / Center / North | 376 full days (Apr 2023 – Oct 2024) |
+| Forecast tonnage reaching the coast (`pronostico_ingreso_costa_ton`) | 154 (Apr – Sep 2023) |
+| Value carried over because of cloud cover (`dato_arrastrado_por_nubes`) | 47 |
 
-### 2. La censura por nubes está documentada en el propio boletín
+![Coverage by field and month](figuras/2_cobertura.png)
 
-Cuando la nubosidad impide estimar el sargazo, el boletín lo declara y usa la cifra de un día anterior. En 2024 ocurrió en 44 días, concentrados entre junio y septiembre. Esos días quedan marcados en la columna `dato_arrastrado_por_nubes`: la serie oficial no es una medición diaria independiente en esos periodos.
+The online archive covers January–October 2023, March–October 2024, March–December 2025 and January–October 2026. Bulletin numbering (January 12, 2023 is No. 491) shows that earlier bulletins exist but are not published.
 
-![Días con cifra arrastrada en 2024](figuras/3_censura_nubes_2024.png)
+---
 
-### 3. El nivel de arribo por zona es muy persistente
+## Findings
 
-Entre abril de 2023 y octubre de 2024, el nivel reportado cambió entre 28 y 40 veces por zona en ~380 días. "Mañana igual que hoy" acierta casi siempre, lo que fija una línea base muy exigente para cualquier pronóstico de corto plazo. SEMAR dejó de publicar este nivel por zona a partir de 2025.
+### 1. Season size varies widely from year to year
 
-![Nivel por zona](figuras/4_niveles_por_zona.png)
+The highest daily estimate was 28,441 t in 2023, 13,208 t in 2024, 82,699 t in 2025 and 90,538 t in 2026.
 
-### 4. Las regiones río arriba no anticipan al Caribe mexicano (resultado negativo)
+![Seasons 2023–2026](figuras/1_temporadas.png)
 
-Se probó si las toneladas del Caribe central y oriental mejoran el pronóstico del Caribe mexicano a 28, 42 y 56 días, frente a usar solo el Caribe mexicano. La regla se fijó antes de ver los datos: la mejora debía ser de al menos 10%.
+### 2. Cloud censoring is documented in the bulletins themselves
 
-| Días adelante | Persistencia | Solo Caribe mexicano | Con Caribe central y oriental | Mejora |
+When cloud cover prevents an estimate, the bulletin says so and reuses an earlier day's figure. In 2024 this happened on 44 days, mostly between June and September. Those days are flagged in `dato_arrastrado_por_nubes`: during those periods the official series is not an independent daily measurement.
+
+![Carried-over values in 2024](figuras/3_censura_nubes_2024.png)
+
+### 3. Beaching levels by zone are highly persistent
+
+Between April 2023 and October 2024, the reported level changed only 28 to 40 times per zone over ~380 days. "Tomorrow equals today" is almost always right, which sets a very demanding baseline for any short-term forecast. SEMAR stopped publishing levels by zone in 2025.
+
+![Beaching level by zone](figuras/4_niveles_por_zona.png)
+
+### 4. Upstream regions do not give earlier warning (negative result)
+
+I tested whether tonnage in the Central and Eastern Caribbean improves the 28-, 42- and 56-day forecast of the Mexican Caribbean, compared with using the Mexican Caribbean alone. The rule was set before looking at the data: the improvement had to be at least 10%.
+
+| Days ahead | Persistence | Mexican Caribbean only | + Central and Eastern Caribbean | Improvement |
 |---|---|---|---|---|
 | 28 | 0.649 | 0.843 | 0.717 | −10% |
 | 42 | 0.586 | 1.459 | 1.397 | −139% |
 | 56 | 0.825 | 2.118 | 1.960 | −137% |
 
-*Error absoluto medio en log(1 + toneladas). Entrenamiento con 2025, evaluación con 2026.*
+*Mean absolute error of log(1 + tonnes). Trained on 2025, evaluated on 2026.*
 
-No pasa. Los modelos entrenados con la temporada 2025 fallan en la de 2026, que fue mucho mayor: con año y medio de datos regionales no es posible estimar una relación estable.
+It fails. Models fitted on the 2025 season break down in 2026, which was much larger: a year and a half of regional data is not enough to estimate a stable relationship.
 
-![Anticipación por región](figuras/5_anticipacion.png)
+![Lead time by region](figuras/5_anticipacion.png)
 
-El Atlántico central occidental muestra correlaciones altas a 28–56 días, pero **no se probó fuera de muestra** y puede reflejar solo el ciclo estacional compartido. Queda como hipótesis para evaluar con la temporada 2027.
+The West-Central Atlantic shows high correlations at 28–56 days, but it was **not tested out of sample** and may only reflect the shared seasonal cycle. It remains a hypothesis to evaluate with the 2027 season.
 
 ---
 
-## Limitaciones
+## Limitations
 
-- **Son evaluaciones de SEMAR, no mediciones independientes.** Las toneladas salen de la composición satelital de 7 días de la Universidad del Sur de Florida (índice AFAI); el semáforo y el nivel por zona combinan esas toneladas, corrientes, vientos y fotografías diarias de playas de la ZOFEMAT de Quintana Roo.
-- **Errores de extracción.** Cuatro valores de toneladas que cambian más de 8 veces respecto a sus vecinos están marcados como `sospechoso` y se excluyen de las figuras. Seis niveles por zona con rango incompleto ("De alto") están marcados en `qc_nivel`.
-- **Huecos.** Unos 56 boletines no existen en el servidor con ningún nombre probado (sobre todo 11–31 oct 2024 y 14–21 mar 2026). Nueve PDF sin texto ni fecha (`SIN_INFORMACION_*.pdf`) se excluyeron.
-- **Escala de alertamiento reconstruida.** El orden de 1 a 8 (Escaso, Muy bajo, Bajo, Moderado, Alto, Muy alto, Abundante, Excesivo) se dedujo de los pares categoría-semáforo que aparecen juntos en los boletines; no proviene de un documento oficial.
+- **These are SEMAR assessments, not independent measurements.** Tonnage comes from the University of South Florida's 7-day satellite composite (AFAI index). The alert level and the zone levels combine that tonnage with currents, winds and daily beach photographs from the Federal Maritime-Terrestrial Zone office (ZOFEMAT) of Quintana Roo.
+- **Extraction errors.** Four tonnage values that change more than 8× relative to their neighbors are flagged as `sospechoso` (suspect) and excluded from the figures. Six zone levels with a truncated range (e.g., "De alto") are flagged in `qc_nivel`.
+- **Gaps.** About 56 bulletins do not exist on the server under any name tried (mostly Oct 11–31, 2024 and Mar 14–21, 2026). Nine PDFs with no text or date (`SIN_INFORMACION_*.pdf`) were excluded.
+- **Reconstructed alert scale.** The 1–8 ordering (Escaso, Muy bajo, Bajo, Moderado, Alto, Muy alto, Abundante, Excesivo — roughly Scarce to Excessive) was inferred from category–level pairs that appear together in the bulletins; it does not come from an official SEMAR document.
 
-## Reproducir
+## Reproduce
 
 ```bash
 pip install requests beautifulsoup4 pdfplumber matplotlib
-python sargazo_semar.py descargar     # ~1,100 PDF, ~30 min
-python sargazo_semar.py recuperar     # corrige enlaces mal escritos en la página de SEMAR
-python sargazo_semar.py inventario    # extrae los campos a inventario.csv y zonas.csv
-# copiar inventario.csv y zonas.csv a datos/crudos/
+python sargazo_semar.py descargar     # ~1,100 PDFs, ~30 min
+python sargazo_semar.py recuperar     # repairs misspelled links on SEMAR's page
+python sargazo_semar.py inventario    # extracts fields to inventario.csv and zonas.csv
+# copy inventario.csv and zonas.csv into datos/crudos/
 python preparar_datos.py
 python figuras.py
 ```
 
-## Licencia y cita
+## License and citation
 
-- Código: MIT.
-- Tablas derivadas: CC BY 4.0. Al usarlas, cita este repositorio **y** la fuente original (IOGMC-SEMAR).
+- Code: MIT.
+- Derived tables: CC BY 4.0. When using them, cite this repository **and** the original source (IOGMC-SEMAR).
 
-> Macías Herrera, M. (2026). *Boletines diarios de sargazo de SEMAR, 2023–2026, en tabla* [Conjunto de datos y código]. GitHub.
+> Macías Herrera, M. (2026). *SEMAR daily sargassum bulletins, 2023–2026, as a table* [Dataset and code]. GitHub. https://github.com/Maxtlihuac/sargazo-semar-boletines
 
-Si trabajas en SEMAR, LANOT u otra institución y tienes registros de arribo por playa (por ejemplo, de ZOFEMAT o SIMSAR), me interesaría conversar: es el dato que permitiría validar pronósticos y decisiones operativas.
+If you work at SEMAR, LANOT or another institution and have beach-level arrival records (for example from ZOFEMAT or SIMSAR), I would be glad to talk: that is the data needed to validate forecasts and operational decisions.
